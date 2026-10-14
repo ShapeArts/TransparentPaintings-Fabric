@@ -23,3 +23,8 @@ Open **Actions** → **Build Fabric mod**. On successful completion, open its ru
 ## Limitations
 
 The renderer Mixin signatures have not been verified against a completed 26.3 compilation. This version does not implement fractional alpha blending, only binary cutout transparency. Java 25, Gradle 9.6 and Loom 1.17 follow the official Fabric 26.3 announcement.
+
+
+## v0.4 experimental 3D frames
+
+This test branch builds actual closed 3D wooden prisms for all four borders. Frames use the block atlas, a 2-pixel fixed extrusion, and a selectable 1–6 pixel front border. No Frame remains the default; press Shift+Right-Click and select a wood type to enable. The original working alpha-cutout painting renderer is unchanged. This build is **not verified in-game**. Test with shaders off first, then Iris. Frame selections are client-local, not synchronized across multiplayer clients.
