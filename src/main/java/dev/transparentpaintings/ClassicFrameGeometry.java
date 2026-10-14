@@ -5,85 +5,53 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
-/** A hollow, connected rectangular molding with 45-degree mitered front corners. */
+/**
+ * Plain four-piece 3D wooden picture frame, no stepped decorative bevel.
+ * Frame texture comes from the selected vanilla wood plank sprite.
+ */
 public final class ClassicFrameGeometry {
     private ClassicFrameGeometry() {}
-    private static final float PIXEL = 1f / 16f;
-    // -Z faces toward the player, matching the 26.3 painting renderer.
+    private static final float PIXEL = 1f/16f;
+    // The vanilla painting artwork is approximately z=-0.03125.
     private static final float FRONT = -0.03125f - PIXEL;
-    private static final float BACK = FRONT + 3f * PIXEL;
+    private static final float BACK = FRONT + 2f*PIXEL;
 
-    /** Draw four connected rings (outer band, bevel, dark inner lip) and the 3D walls. */
-    public static void draw(PoseStack.Pose p, VertexConsumer b, TextureAtlasSprite tex,
-                            float width, float height, int borderPixels, int light) {
-        final float halfW = width / 2f, halfH = height / 2f;
-        final float border = borderPixels * PIXEL;
-        if (border <= 0f || 2f * border >= width || 2f * border >= height) return;
-        float[] inset = {0f, border * .55f, border * .80f, border};
-        float[] depth = {FRONT, FRONT, FRONT + .50f * PIXEL, FRONT + PIXEL};
-        int[] shade = {0xFFFFFFFF, 0xFFF0F0F0, 0xFFD4D4D4};
-        for (int k = 0; k < 3; k++) {
-            ring(p,b,tex,halfW,halfH,inset[k],depth[k],
-                 inset[k+1],depth[k+1],light,shade[k]);
-        }
-        // Physical outside faces (3 px deep).
-        float x0=-halfW,x1=halfW,y0=-halfH,y1=halfH;
-        quad(p,b,tex, x0,y0,BACK, x0,y1,BACK, x0,y1,FRONT, x0,y0,FRONT,
-             -1,0,0,light,0xFFC4C4C4);
-        quad(p,b,tex, x1,y0,FRONT, x1,y1,FRONT, x1,y1,BACK, x1,y0,BACK,
-             1,0,0,light,0xFFC4C4C4);
-        quad(p,b,tex, x0,y1,FRONT, x0,y1,BACK, x1,y1,BACK, x1,y1,FRONT,
-             0,1,0,light,0xFFE0E0E0);
-        quad(p,b,tex, x0,y0,BACK, x0,y0,FRONT, x1,y0,FRONT, x1,y0,BACK,
-             0,-1,0,light,0xFFAFAFAF);
-
-        // Interior edge: a genuine recessed wall, leaving the center fully open.
-        float ix0=x0+border,ix1=x1-border,iy0=y0+border,iy1=y1-border;
-        float innerZ=FRONT+PIXEL;
-        quad(p,b,tex, ix0,iy0,innerZ, ix0,iy1,innerZ, ix0,iy1,BACK, ix0,iy0,BACK,
-             1,0,0,light,0xFF929292);
-        quad(p,b,tex, ix1,iy0,BACK, ix1,iy1,BACK, ix1,iy1,innerZ, ix1,iy0,innerZ,
-             -1,0,0,light,0xFF929292);
-        quad(p,b,tex, ix0,iy1,BACK, ix0,iy1,innerZ, ix1,iy1,innerZ, ix1,iy1,BACK,
-             0,-1,0,light,0xFF929292);
-        quad(p,b,tex, ix0,iy0,innerZ, ix0,iy0,BACK, ix1,iy0,BACK, ix1,iy0,innerZ,
-             0,1,0,light,0xFF929292);
-
-        // The rear is an annulus, not a solid quad: transparent artwork stays transparent.
-        ring(p,b,tex,halfW,halfH,0,BACK,border,BACK,light,0xFFB0B0B0);
+    public static void draw(PoseStack.Pose pose, VertexConsumer out, TextureAtlasSprite sprite,
+                            float width,float height,int borderPixels,int light) {
+        float t=borderPixels*PIXEL;
+        if(t<=0 || 2*t>=width || 2*t>=height) return;
+        float l=-width/2f,r=width/2f,b=-height/2f,top=height/2f;
+        // One continuous rectangular profile with four non-overlapping segments.
+        // Wood plank atlas texture is mapped only inside its own sprite rectangle.
+        box(pose,out,sprite,l,top-t,r,top,FRONT,BACK,light);
+        box(pose,out,sprite,l,b,r,b+t,FRONT,BACK,light);
+        box(pose,out,sprite,l,b+t,l+t,top-t,FRONT,BACK,light);
+        box(pose,out,sprite,r-t,b+t,r,top-t,FRONT,BACK,light);
     }
 
-    /** Each band is four trapezoids with shared corner vertices: no overlapping rectangular pieces. */
-    private static void ring(PoseStack.Pose p, VertexConsumer b, TextureAtlasSprite tex,
-                             float hw,float hh,float a,float za,float c,float zc,
-                             int light,int tint) {
-        float ax=-hw+a,bx=hw-a,ay=-hh+a,by=hh-a;
-        float cx=-hw+c,dx=hw-c,cy=-hh+c,dy=hh-c;
-        quad(p,b,tex, ax,by,za, bx,by,za, dx,dy,zc, cx,dy,zc,
-             0,0,-1,light,tint);  // top
-        quad(p,b,tex, ax,ay,za, cx,cy,zc, dx,cy,zc, bx,ay,za,
-             0,0,-1,light,tint);  // bottom
-        quad(p,b,tex, ax,ay,za, ax,by,za, cx,dy,zc, cx,cy,zc,
-             0,0,-1,light,tint);  // left
-        quad(p,b,tex, dx,cy,zc, dx,dy,zc, bx,by,za, bx,ay,za,
-             0,0,-1,light,tint);  // right
+    private static void box(PoseStack.Pose p,VertexConsumer b,TextureAtlasSprite s,
+                            float x0,float y0,float x1,float y1,float z0,float z1,int light) {
+        // A flat wood front, two-pixel real extrusion, dark inner edges.
+        quad(p,b,s,x0,y0,z0,x0,y1,z0,x1,y1,z0,x1,y0,z0,0,0,-1,light,0xFFFFFFFF);
+        quad(p,b,s,x1,y0,z1,x1,y1,z1,x0,y1,z1,x0,y0,z1,0,0,1,light,0xFFB8B8B8);
+        quad(p,b,s,x0,y0,z1,x0,y1,z1,x0,y1,z0,x0,y0,z0,-1,0,0,light,0xFFC2C2C2);
+        quad(p,b,s,x1,y0,z0,x1,y1,z0,x1,y1,z1,x1,y0,z1,1,0,0,light,0xFF9B9B9B);
+        quad(p,b,s,x0,y1,z0,x0,y1,z1,x1,y1,z1,x1,y1,z0,0,1,0,light,0xFFE5E5E5);
+        quad(p,b,s,x0,y0,z1,x0,y0,z0,x1,y0,z0,x1,y0,z1,0,-1,0,light,0xFFAFAFAF);
     }
-
-    private static void quad(PoseStack.Pose p,VertexConsumer b,TextureAtlasSprite t,
-                             float ax,float ay,float az, float bx,float by,float bz,
-                             float cx,float cy,float cz, float dx,float dy,float dz,
-                             int nx,int ny,int nz,int light,int color) {
-        vertex(p,b,t,ax,ay,az,0,0,nx,ny,nz,light,color);
-        vertex(p,b,t,bx,by,bz,0,1,nx,ny,nz,light,color);
-        vertex(p,b,t,cx,cy,cz,1,1,nx,ny,nz,light,color);
-        vertex(p,b,t,dx,dy,dz,1,0,nx,ny,nz,light,color);
+    private static void quad(PoseStack.Pose p,VertexConsumer b,TextureAtlasSprite s,
+                              float ax,float ay,float az,float bx,float by,float bz,
+                              float cx,float cy,float cz,float dx,float dy,float dz,
+                              int nx,int ny,int nz,int light,int tint) {
+        vertex(p,b,s,ax,ay,az,0,0,nx,ny,nz,light,tint);
+        vertex(p,b,s,bx,by,bz,0,1,nx,ny,nz,light,tint);
+        vertex(p,b,s,cx,cy,cz,1,1,nx,ny,nz,light,tint);
+        vertex(p,b,s,dx,dy,dz,1,0,nx,ny,nz,light,tint);
     }
-    private static void vertex(PoseStack.Pose pose,VertexConsumer buffer,TextureAtlasSprite sprite,
+    private static void vertex(PoseStack.Pose p,VertexConsumer b,TextureAtlasSprite s,
                                float x,float y,float z,float u,float v,
-                               int nx,int ny,int nz,int light,int color) {
-        buffer.addVertex(pose,x,y,z).setColor(color)
-              .setUv(sprite.getU(u),sprite.getV(v))
-              .setOverlay(OverlayTexture.NO_OVERLAY).setLight(light)
-              .setNormal(pose,nx,ny,nz);
+                               int nx,int ny,int nz,int light,int tint) {
+        b.addVertex(p,x,y,z).setColor(tint).setUv(s.getU(u),s.getV(v))
+         .setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(p,nx,ny,nz);
     }
 }
