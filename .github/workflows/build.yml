@@ -1,7 +1,7 @@
 name: Build Fabric mod
 on:
   push:
-    branches: [main]
+    branches: [main, "feature/**"]
   workflow_dispatch:
 jobs:
   build:
