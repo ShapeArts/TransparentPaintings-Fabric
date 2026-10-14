@@ -52,7 +52,7 @@ public abstract class PaintingRendererFrameMixin {
         vertex(p,b,sprite,e[0],e[1],e[2],0,1,nx,ny,nz,light);
     }
     private static void vertex(PoseStack.Pose p,VertexConsumer b,TextureAtlasSprite sprite,float x,float y,float z,float u,float v,int nx,int ny,int nz,int light) {
-        b.addVertex(p,x,y,z).setColor(-1).setUv(sprite.getU(u*16),sprite.getV(v*16)).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(p,nx,ny,nz);
+        b.addVertex(p,x,y,z).setColor(-1).setUv(sprite.getU(u),sprite.getV(v)).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(p,nx,ny,nz);
     }
     private static float[] v(float x,float y,float z){return new float[]{x,y,z};}
     private static void box(PoseStack.Pose p,VertexConsumer b,TextureAtlasSprite sprite,float x0,float y0,float x1,float y1,float z0,float z1,int l){
