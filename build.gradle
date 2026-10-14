@@ -30,7 +30,7 @@ tasks.register('generateReferenceFrameTexture') {
         def pending=new java.util.ArrayDeque<Integer>()
         for(int yy=0;yy<sh;yy++) for(int xx=0;xx<sw;xx++){
             int i=yy*sw+xx, rgba=source.getRGB(xx,yy)
-            if(((rgba>>>24)&255)>127){filled[i]=rgba;claimed[i]=true;pending.add(i)}
+            if(((rgba>>>24)&255)>127 && !(((rgba>>>16)&255)>238 && ((rgba>>>8)&255)>238 && (rgba&255)>238)){filled[i]=rgba;claimed[i]=true;pending.add(i)}
         }
         while(!pending.isEmpty()){
             int i=pending.removeFirst(), xx=i%sw, yy=(int)(i/sw)
@@ -48,7 +48,7 @@ tasks.register('generateReferenceFrameTexture') {
         // Keep the source's texture pattern and its dark/light pixels.
         // Shift the underlying oak palette to the target wood color.
         def palette = [
-          oak: [154,112,66], spruce:[106,72,47], birch:[211,192,137],
+          oak: [135,96,55], spruce:[106,72,47], birch:[211,192,137],
           jungle:[166,123,79], acacia:[174,91,57], dark_oak:[75,53,38],
           mangrove:[132,58,55], cherry:[211,149,153], bamboo:[192,177,79],
           pale_oak:[192,186,169], crimson:[126,52,79], warped:[55,121,117]
@@ -61,18 +61,15 @@ tasks.register('generateReferenceFrameTexture') {
                 // Transparent source-white parts are never sampled by the frame UVs,
                 // but clear them as a second guard against blocking transparent art.
                 int alpha=255
-                // Preserve the original pixelated wood-grain, but split each
-                // atlas tile into a subtly highlighted outside, natural-color
-                // central band and shadowed inner edge. Source is an 80px atlas
-                // arranged on a 5x5 grid of 16px texture cells.
-                double luminance=(0.2126*red+0.7152*green+0.0722*blue)/135.0
-                double woodGrain=0.70+0.30*luminance
-                int localX=x%16
-                double profile = localX < 4 ? 1.12 : (localX < 11 ? 1.0 : 0.86)
-                double strength=woodGrain*profile
-                int r=Math.min(255,Math.max(0,(int)Math.round(target[0]*strength)))
-                int g=Math.min(255,Math.max(0,(int)Math.round(target[1]*strength)))
-                int b=Math.min(255,Math.max(0,(int)Math.round(target[2]*strength)))
+                // Preserve every source frame pixel unchanged for Oak.
+                // Other woods recolor its RGB channels without changing the
+                // spatial grain, highlights, grooves or corner detail.
+                double scaleR=target[0]/135.0
+                double scaleG=target[1]/96.0
+                double scaleB=target[2]/55.0
+                int r=Math.min(255,Math.max(0,(int)Math.round(red*scaleR)))
+                int g=Math.min(255,Math.max(0,(int)Math.round(green*scaleG)))
+                int b=Math.min(255,Math.max(0,(int)Math.round(blue*scaleB)))
                 image.setRGB(x,y,(alpha<<24)|(r<<16)|(g<<8)|b)
             }
             javax.imageio.ImageIO.write(image,'png',new File(destination,wood+'.png'))
