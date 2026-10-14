@@ -81,6 +81,11 @@ public final class ClassicFrameGeometry {
         vertex(p,b,bx,by,bz,u0,v0,nx,ny,nz,light);
         vertex(p,b,cx,cy,cz,u1,v0,nx,ny,nz,light);
         vertex(p,b,dx,dy,dz,u1,v1,nx,ny,nz,light);
+        // Frame surfaces must remain visible from either viewing side.
+        vertex(p,b,dx,dy,dz,u1,v1,-nx,-ny,-nz,light);
+        vertex(p,b,cx,cy,cz,u1,v0,-nx,-ny,-nz,light);
+        vertex(p,b,bx,by,bz,u0,v0,-nx,-ny,-nz,light);
+        vertex(p,b,ax,ay,az,u0,v1,-nx,-ny,-nz,light);
     }
     private static void vertex(PoseStack.Pose p,VertexConsumer b,
         float x,float y,float z,float u,float v,int nx,int ny,int nz,int l) {
