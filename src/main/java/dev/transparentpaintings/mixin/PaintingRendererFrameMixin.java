@@ -47,9 +47,9 @@ public abstract class PaintingRendererFrameMixin {
     }
     private static void quad(PoseStack.Pose p,VertexConsumer b,TextureAtlasSprite sprite,float[] a,float[] c,float[] d,float[] e,int nx,int ny,int nz,int light) {
         vertex(p,b,sprite,a[0],a[1],a[2],0,0,nx,ny,nz,light);
-        vertex(p,b,c[0],c[1],c[2],1,0,nx,ny,nz,light);
-        vertex(p,b,d[0],d[1],d[2],1,1,nx,ny,nz,light);
-        vertex(p,b,e[0],e[1],e[2],0,1,nx,ny,nz,light);
+        vertex(p,b,sprite,c[0],c[1],c[2],1,0,nx,ny,nz,light);
+        vertex(p,b,sprite,d[0],d[1],d[2],1,1,nx,ny,nz,light);
+        vertex(p,b,sprite,e[0],e[1],e[2],0,1,nx,ny,nz,light);
     }
     private static void vertex(PoseStack.Pose p,VertexConsumer b,TextureAtlasSprite sprite,float x,float y,float z,float u,float v,int nx,int ny,int nz,int light) {
         b.addVertex(p,x,y,z).setColor(-1).setUv(sprite.getU(u*16),sprite.getV(v*16)).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(p,nx,ny,nz);
