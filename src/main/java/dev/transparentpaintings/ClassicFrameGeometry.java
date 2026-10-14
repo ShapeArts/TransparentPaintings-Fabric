@@ -73,15 +73,15 @@ public final class ClassicFrameGeometry {
         face(p,b,x0,y0,z0,x0,y1,z0,x1,y1,z0,x1,y0,z0,
              u,v-dv,u+du,v,0,0,-1,light);
         face(p,b,x1,y0,z1,x1,y1,z1,x0,y1,z1,x0,y0,z1,
-             u,v-dv,u+du,v,0,0,1,light,dx,dy);
+             u,v-dv,u+du,v,0,0,1,light);
         face(p,b,x0,y0,z1,x0,y1,z1,x0,y1,z0,x0,y0,z0,
-             kind==0?2f:1.2f,v-dv,(kind==0?2f:1.2f)+dz,v,-1,0,0,light,dx,dy);
+             kind==0?2f:1.2f,v-dv,(kind==0?2f:1.2f)+dz,v,-1,0,0,light);
         face(p,b,x1,y0,z0,x1,y1,z0,x1,y1,z1,x1,y0,z1,
-             kind==0?2.6f:1.4f,v-dv,(kind==0?2.6f:1.4f)+dz,v,1,0,0,light,dx,dy);
+             kind==0?2.6f:1.4f,v-dv,(kind==0?2.6f:1.4f)+dz,v,1,0,0,light);
         face(p,b,x0,y1,z0,x0,y1,z1,x1,y1,z1,x1,y1,z0,
-             u,kind==0?2f:1.2f,u+du,(kind==0?2f:1.2f)+dz,0,1,0,light,dx,dy);
+             u,kind==0?2f:1.2f,u+du,(kind==0?2f:1.2f)+dz,0,1,0,light);
         face(p,b,x0,y0,z1,x0,y0,z0,x1,y0,z0,x1,y0,z1,
-             u,kind==0?2.6f:1.4f,u+du,(kind==0?2.6f:1.4f)+dz,0,-1,0,light,dx,dy);
+             u,kind==0?2.6f:1.4f,u+du,(kind==0?2.6f:1.4f)+dz,0,-1,0,light);
     }
     private static void face(PoseStack.Pose p,VertexConsumer b,
             float ax,float ay,float az,float bx,float by,float bz,
