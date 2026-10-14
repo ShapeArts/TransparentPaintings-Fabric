@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /** Adds extruded wooden strips around (not behind) the artwork. */
 @Mixin(PaintingRenderer.class)
 public abstract class PaintingRendererFrameMixin {
-    @Inject(method="submit",at=@At("HEAD"))
+    @Inject(method="submit",at=@At(value="INVOKE", target="Lcom/mojang/blaze3d/vertex/PoseStack;popPose()V", shift=At.Shift.BEFORE))
     private void transparentpaintings$submitFrames(PaintingRenderState state, PoseStack poses,
        SubmitNodeCollector collector, CameraRenderState camera, CallbackInfo ci) {
         if(state.variant==null || state.direction==null || Minecraft.getInstance().level==null) return;
@@ -32,7 +32,6 @@ public abstract class PaintingRendererFrameMixin {
         float w=state.variant.width(), h=state.variant.height(), t=style.width()/16.0f;
         if(t*2>=w || t*2>=h) return;
         poses.pushPose();
-        poses.rotateDegrees(Axis.YP,180f-state.direction.get2DDataValue()*90f);
         collector.submitCustomGeometry(poses,RenderTypes.entitySolid(texture),(pose,buffer)->{
            float x=-w/2f, y=-h/2f;
            // Four boxes: top, bottom, left, right. Front at -1.35 pixels; back at -0.3.
