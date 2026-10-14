@@ -24,7 +24,7 @@ jobs:
           while read -r jar; do
             if jar tf "$jar" 2>/dev/null | grep -q '^net/minecraft/client/renderer/entity/PaintingRenderer.class$'; then
               echo "=== FOUND JAR: $jar ==="
-              javap -private -classpath "$jar" net.minecraft.client.renderer.entity.PaintingRenderer
+              javap -c -private -classpath "$jar" net.minecraft.client.renderer.entity.PaintingRenderer | head -400
               javap -private -classpath "$jar" net.minecraft.client.gui.screens.Screen | head -110
               javap -private -classpath "$jar" net.minecraft.client.gui.components.Button | head -50
               javap -private -classpath "$jar" net.minecraft.client.renderer.entity.EntityRenderer | head -70
