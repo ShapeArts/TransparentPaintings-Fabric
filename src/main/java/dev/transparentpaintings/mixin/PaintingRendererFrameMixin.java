@@ -35,10 +35,13 @@ public abstract class PaintingRendererFrameMixin {
             .getSprite(Identifier.withDefaultNamespace("block/"+type+"_planks"));
         float w=state.variant.width(), h=state.variant.height();
         int border=style.width(), light=state.lightCoords;
-        Identifier texture = style.wood()==1
-                ? Identifier.fromNamespaceAndPath("transparentpaintings", "textures/frame/oak.png")
-                : sprite.atlasLocation();
-        collector.submitCustomGeometry(poses,RenderTypes.entitySolid(texture),
-           (pose,buffer)->ClassicFrameGeometry.draw(pose,buffer,sprite,style.wood()==1,w,h,border,light));
+
+        // Keep original vanilla wood on 3D sides, use image-template palette on the front.
+        collector.submitCustomGeometry(poses,RenderTypes.entitySolid(sprite.atlasLocation()),
+           (pose,buffer)->ClassicFrameGeometry.draw(pose,buffer,sprite,false,w,h,border,light));
+        Identifier reference=Identifier.fromNamespaceAndPath(
+           "transparentpaintings", "textures/frame/"+type+".png");
+        collector.submitCustomGeometry(poses,RenderTypes.entityCutout(reference),
+           (pose,buffer)->ClassicFrameGeometry.drawFront(pose,buffer,w,h,border,light));
     }
 }
