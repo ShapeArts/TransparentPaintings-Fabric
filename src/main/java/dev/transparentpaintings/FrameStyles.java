@@ -24,7 +24,7 @@ public final class FrameStyles {
         if (Files.exists(file())) try (Reader r=Files.newBufferedReader(file())) { DATA.load(r); } catch(IOException ignored) { }
     }
     public static String key(Painting painting) {
-        return painting.level().dimension().location()+":"+painting.getBlockX()+":"+painting.getBlockY()+":"+painting.getBlockZ();
+        return painting.level().dimension().identifier()+":"+painting.getBlockX()+":"+painting.getBlockY()+":"+painting.getBlockZ();
     }
     public static String key(String dimension,double x,double y,double z) {
         return dimension+":"+Math.floor(x)+":"+Math.floor(y)+":"+Math.floor(z);
