@@ -11,3 +11,15 @@ dependencies {
 processResources { inputs.property 'version', project.version; filesMatching('fabric.mod.json') { expand 'version': project.version } }
 tasks.withType(JavaCompile).configureEach { options.release = 25 }
 java { sourceCompatibility = JavaVersion.VERSION_25; targetCompatibility = JavaVersion.VERSION_25 }
+
+tasks.register('generateReferenceFrameTexture') {
+    def target = layout.buildDirectory.file('generated/frameAssets/assets/transparentpaintings/textures/frame/oak.png')
+    outputs.file(target)
+    doLast {
+        def out = target.get().asFile
+        out.parentFile.mkdirs()
+        out.bytes = java.util.Base64.decoder.decode(file('frame-oak.png.base64').text.trim())
+    }
+}
+sourceSets.main.resources.srcDir layout.buildDirectory.dir('generated/frameAssets')
+tasks.named('processResources') { dependsOn 'generateReferenceFrameTexture' }
