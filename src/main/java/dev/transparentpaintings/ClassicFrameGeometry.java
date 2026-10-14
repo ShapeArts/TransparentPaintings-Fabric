@@ -17,7 +17,7 @@ public final class ClassicFrameGeometry {
     private static final float PX = 1f/16f;
     // Back face almost flush with the supporting block plane (0 Z).
     // Reduce the physical depth by 50%, retaining the working tiled frame geometry.
-    private static final float REAR = -0.001f;
+    private static final float REAR = 0.014625f;
     private static final float FRONT = REAR-1f*PX;
     private static final float LIP_FRONT = REAR-0.675f*PX;
 
