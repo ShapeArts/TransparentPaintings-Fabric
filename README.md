@@ -28,3 +28,8 @@ The renderer Mixin signatures have not been verified against a completed 26.3 co
 ## v0.4 experimental 3D frames
 
 This test branch builds actual closed 3D wooden prisms for all four borders. Frames use the block atlas, a 2-pixel fixed extrusion, and a selectable 1–6 pixel front border. No Frame remains the default; press Shift+Right-Click and select a wood type to enable. The original working alpha-cutout painting renderer is unchanged. This build is **not verified in-game**. Test with shaders off first, then Iris. Frame selections are client-local, not synchronized across multiplayer clients.
+
+
+## v0.5 Classic Frame experiment
+
+The v0.5 branch replaces the simple box frame with connected, mitered decorative rings: outer band, shallow bevel, dark inner lip, fixed 3-pixel physical depth. It preserves the original transparent painting renderer and frame-selection UI. In-game appearance and Iris shader compatibility are not yet verified. Check front and 45-degree side views with Oak at 6px, then widths 1–6 and No Frame.
