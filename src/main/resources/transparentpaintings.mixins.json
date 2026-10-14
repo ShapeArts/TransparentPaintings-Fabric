@@ -2,6 +2,6 @@
   "required": true,
   "package": "dev.transparentpaintings.mixin",
   "compatibilityLevel": "JAVA_25",
-  "client": ["PaintingRendererMixin", "PaintingRendererFrameMixin"],
+  "client": ["PaintingRendererMixin"],
   "injectors": {"defaultRequire": 1}
 }
