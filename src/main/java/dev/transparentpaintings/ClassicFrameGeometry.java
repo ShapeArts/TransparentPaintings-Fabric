@@ -32,40 +32,40 @@ public final class ClassicFrameGeometry {
             // Outer perimeter: horizontal rails span their full tile;
             // vertical rails fit between horizontal rails, with no shared corners.
             if(top) cube(pose,output,dx,dy+(16-outer)*PX,dx+1,dy+1,
-                         FRONT,REAR, 3.2f,3.2f,0,light);
+                         FRONT,REAR, 3.2f,3.2f,0,light,dx,dy);
             if(bottom)cube(pose,output,dx,dy,dx+1,dy+outer*PX,
-                           FRONT,REAR,3.2f,3.2f,0,light);
+                           FRONT,REAR,3.2f,3.2f,0,light,dx,dy);
             if(left)cube(pose,output,dx,dy+(bottom?outer:0)*PX,
                           dx+outer*PX,dy+(top?16-outer:16)*PX,
-                          FRONT,REAR,3.2f,3.2f,0,light);
+                          FRONT,REAR,3.2f,3.2f,0,light,dx,dy);
             if(right)cube(pose,output,dx+(16-outer)*PX,dy+(bottom?outer:0)*PX,
                            dx+1,dy+(top?16-outer:16)*PX,
-                           FRONT,REAR,3.2f,3.2f,0,light);
+                           FRONT,REAR,3.2f,3.2f,0,light,dx,dy);
             if(inner>0){
                 if(top)cube(pose,output,dx+((left?outer:0)*PX),
                     dy+(16-border)*PX,
                     dx+((right?16-outer:16)*PX),dy+(16-outer)*PX,
-                    LIP_FRONT,REAR,1.0f,1.0f,1,light);
+                    LIP_FRONT,REAR,1.0f,1.0f,1,light,dx,dy);
                 if(bottom)cube(pose,output,dx+((left?outer:0)*PX),dy+outer*PX,
                     dx+((right?16-outer:16)*PX),dy+border*PX,
-                    LIP_FRONT,REAR,1.0f,1.0f,1,light);
+                    LIP_FRONT,REAR,1.0f,1.0f,1,light,dx,dy);
                 if(left)cube(pose,output,dx+outer*PX,dy+(bottom?border:0)*PX,
                     dx+border*PX,dy+(top?16-border:16)*PX,
-                    LIP_FRONT,REAR,1.0f,1.0f,1,light);
+                    LIP_FRONT,REAR,1.0f,1.0f,1,light,dx,dy);
                 if(right)cube(pose,output,dx+(16-border)*PX,dy+(bottom?border:0)*PX,
                     dx+(16-outer)*PX,dy+(top?16-border:16)*PX,
-                    LIP_FRONT,REAR,1.0f,1.0f,1,light);
+                    LIP_FRONT,REAR,1.0f,1.0f,1,light,dx,dy);
             }
         }
     }
 
     private static void cube(PoseStack.Pose p,VertexConsumer b,
             float x0,float y0,float x1,float y1,float z0,float z1,
-            float baseU,float baseV,int kind,int light) {
+            float baseU,float baseV,int kind,int light,float tileOriginX,float tileOriginY) {
         if(x1<=x0||y1<=y0||z1<=z0)return;
         // UV dimensions correspond to 5 pixels per model-UV unit in the supplied
         // 80x80 atlas. Each block gets one fixed pattern rather than stretching.
-        float tileX=x0-(float)Math.floor(x0),tileY=y0-(float)Math.floor(y0);
+        float tileX=x0-tileOriginX,tileY=y0-tileOriginY;
         float u=baseU+tileX*3.2f, v=baseV+(1f-tileY)*3.2f;
         float du=(x1-x0)*3.2f,dv=(y1-y0)*3.2f,dz=(z1-z0)*3.2f;
         // All surfaces sampled from valid 0..16 UVs of the original 80x80 atlas.
@@ -73,15 +73,15 @@ public final class ClassicFrameGeometry {
         face(p,b,x0,y0,z0,x0,y1,z0,x1,y1,z0,x1,y0,z0,
              u,v-dv,u+du,v,0,0,-1,light);
         face(p,b,x1,y0,z1,x1,y1,z1,x0,y1,z1,x0,y0,z1,
-             u,v-dv,u+du,v,0,0,1,light);
+             u,v-dv,u+du,v,0,0,1,light,dx,dy);
         face(p,b,x0,y0,z1,x0,y1,z1,x0,y1,z0,x0,y0,z0,
-             kind==0?2f:1.2f,v-dv,(kind==0?2f:1.2f)+dz,v,-1,0,0,light);
+             kind==0?2f:1.2f,v-dv,(kind==0?2f:1.2f)+dz,v,-1,0,0,light,dx,dy);
         face(p,b,x1,y0,z0,x1,y1,z0,x1,y1,z1,x1,y0,z1,
-             kind==0?2.6f:1.4f,v-dv,(kind==0?2.6f:1.4f)+dz,v,1,0,0,light);
+             kind==0?2.6f:1.4f,v-dv,(kind==0?2.6f:1.4f)+dz,v,1,0,0,light,dx,dy);
         face(p,b,x0,y1,z0,x0,y1,z1,x1,y1,z1,x1,y1,z0,
-             u,kind==0?2f:1.2f,u+du,(kind==0?2f:1.2f)+dz,0,1,0,light);
+             u,kind==0?2f:1.2f,u+du,(kind==0?2f:1.2f)+dz,0,1,0,light,dx,dy);
         face(p,b,x0,y0,z1,x0,y0,z0,x1,y0,z0,x1,y0,z1,
-             u,kind==0?2.6f:1.4f,u+du,(kind==0?2.6f:1.4f)+dz,0,-1,0,light);
+             u,kind==0?2.6f:1.4f,u+du,(kind==0?2.6f:1.4f)+dz,0,-1,0,light,dx,dy);
     }
     private static void face(PoseStack.Pose p,VertexConsumer b,
             float ax,float ay,float az,float bx,float by,float bz,
