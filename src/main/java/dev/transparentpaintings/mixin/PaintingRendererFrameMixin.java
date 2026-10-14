@@ -24,7 +24,7 @@ public abstract class PaintingRendererFrameMixin {
     private void transparentpaintings$submitFrames(PaintingRenderState state, PoseStack poses,
        SubmitNodeCollector collector, CameraRenderState camera, CallbackInfo ci) {
         if(state.variant==null || state.direction==null || Minecraft.getInstance().level==null) return;
-        String dimension=Minecraft.getInstance().level.dimension().location().toString();
+        String dimension=Minecraft.getInstance().level.dimension().identifier().toString();
         FrameStyles.Style style=FrameStyles.get(FrameStyles.key(dimension,state.x,state.y,state.z));
         if(style.wood()==0) return;
         String type=FrameStyles.WOODS[style.wood()].toLowerCase(java.util.Locale.ROOT).replace(' ','_');
