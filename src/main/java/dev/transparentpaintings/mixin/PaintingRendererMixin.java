@@ -24,6 +24,13 @@ public abstract class PaintingRendererMixin {
         return RenderTypes.entityCutout(paintingsAtlas.location());
     }
 
+    // Offset only the painting's front face toward its backing wall to match
+    // the frame's revised wall placement; preserve artwork transparency.
+    @ModifyVariable(method = "vertex", at = @At("HEAD"), argsOnly = true, ordinal = 4)
+    private static float transparentpaintings$wallFitArtwork(float z) {
+        return z + 0.015625f;
+    }
+
     @Inject(method = "vertex", at = @At("HEAD"), cancellable = true)
     private static void transparentpaintings$frontOnly(
             PoseStack.Pose pose, VertexConsumer buffer,
