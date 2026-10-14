@@ -35,7 +35,10 @@ public abstract class PaintingRendererFrameMixin {
             .getSprite(Identifier.withDefaultNamespace("block/"+type+"_planks"));
         float w=state.variant.width(), h=state.variant.height();
         int border=style.width(), light=state.lightCoords;
-        collector.submitCustomGeometry(poses,RenderTypes.entitySolid(sprite.atlasLocation()),
-           (pose,buffer)->ClassicFrameGeometry.draw(pose,buffer,sprite,w,h,border,light));
+        Identifier texture = style.wood()==1
+                ? Identifier.fromNamespaceAndPath("transparentpaintings", "textures/frame/oak.png")
+                : sprite.atlasLocation();
+        collector.submitCustomGeometry(poses,RenderTypes.entitySolid(texture),
+           (pose,buffer)->ClassicFrameGeometry.draw(pose,buffer,sprite,style.wood()==1,w,h,border,light));
     }
 }
