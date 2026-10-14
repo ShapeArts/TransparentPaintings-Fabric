@@ -15,9 +15,11 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 public final class ClassicFrameGeometry {
     private ClassicFrameGeometry() {}
     private static final float PX = 1f/16f;
-    private static final float REAR = -.03125f-.015f;
-    private static final float FRONT = REAR-2f*PX;
-    private static final float LIP_FRONT = REAR-1.35f*PX;
+    // Back face almost flush with the supporting block plane (0 Z).
+    // Reduce the physical depth by 50%, retaining the working tiled frame geometry.
+    private static final float REAR = -0.001f;
+    private static final float FRONT = REAR-1f*PX;
+    private static final float LIP_FRONT = REAR-0.675f*PX;
 
     public static void draw(PoseStack.Pose pose,VertexConsumer output,
                             float width,float height,int requestedWidth,int light) {
