@@ -1,0 +1,33 @@
+name: Inspect Fabric 26.3 renderer APIs
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/3d-frame-editor]
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.6.0'
+      - name: Generate mapped jars
+        run: gradle compileJava --stacktrace
+      - name: Locate render jar and inspect signatures
+        shell: bash
+        run: |
+          find ~/.gradle .gradle -name '*.jar' -path '*minecraft*' | head -50
+          while read -r jar; do
+            if jar tf "$jar" 2>/dev/null | grep -q '^net/minecraft/client/renderer/entity/PaintingRenderer.class$'; then
+              echo "=== FOUND JAR: $jar ==="
+              javap -private -classpath "$jar" net.minecraft.client.renderer.entity.PaintingRenderer
+              javap -private -classpath "$jar" net.minecraft.client.gui.screens.Screen | head -110
+              javap -private -classpath "$jar" net.minecraft.client.gui.components.Button | head -50
+              javap -private -classpath "$jar" net.minecraft.client.renderer.entity.EntityRenderer | head -70
+              break
+            fi
+          done < <(find ~/.gradle .gradle -name '*.jar' -type f 2>/dev/null)
