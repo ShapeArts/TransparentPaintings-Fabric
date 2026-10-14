@@ -31,17 +31,11 @@ public abstract class PaintingRendererFrameMixin {
         FrameStyles.Style style=FrameStyles.get(FrameStyles.key(dimension,state.x,state.y,state.z));
         if(style.wood()==0) return;
         String type=FrameStyles.WOODS[style.wood()].toLowerCase(java.util.Locale.ROOT).replace(' ','_');
-        TextureAtlasSprite sprite=mc.getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)
-            .getSprite(Identifier.withDefaultNamespace("block/"+type+"_planks"));
         float w=state.variant.width(), h=state.variant.height();
         int border=style.width(), light=state.lightCoords;
-
-        // Keep original vanilla wood on 3D sides, use image-template palette on the front.
-        collector.submitCustomGeometry(poses,RenderTypes.entitySolid(sprite.atlasLocation()),
-           (pose,buffer)->ClassicFrameGeometry.draw(pose,buffer,sprite,false,w,h,border,light));
         Identifier reference=Identifier.fromNamespaceAndPath(
            "transparentpaintings", "textures/frame/"+type+".png");
         collector.submitCustomGeometry(poses,RenderTypes.entityCutout(reference),
-           (pose,buffer)->ClassicFrameGeometry.drawFront(pose,buffer,w,h,border,light));
+           (pose,buffer)->ClassicFrameGeometry.draw(pose,buffer,w,h,border,light));
     }
 }
