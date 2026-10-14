@@ -34,7 +34,7 @@ public abstract class PaintingRendererFrameMixin {
         poses.pushPose();
         poses.rotateDegrees(Axis.YP,180f-state.direction.toYRot());
         poses.scale(1f/16f,1f/16f,1f/16f);
-        collector.submitCustomGeometry(poses,RenderTypes.entityCutout(texture),(pose,buffer)->{
+        collector.submitCustomGeometry(poses,RenderTypes.entitySolid(texture),(pose,buffer)->{
            float x=-w/2f, y=-h/2f;
            // Four boxes: top, bottom, left, right. Front at -1.35 pixels; back at -0.3.
            box(pose,buffer,x,y+h-t,x+w,y+h,-1.35f,-0.30f,state.lightCoords);
