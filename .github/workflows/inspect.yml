@@ -27,6 +27,7 @@ jobs:
               javap -c -private -classpath "$jar" net.minecraft.client.renderer.entity.PaintingRenderer | head -400
               javap -private -classpath "$jar" net.minecraft.client.renderer.texture.TextureAtlasSprite | head -95
               javap -private -classpath "$jar" net.minecraft.client.Minecraft | grep -i -E 'atlas|texture' | head -45
+              javap -private -classpath "$jar" net.minecraft.client.resources.model.sprite.AtlasManager | head -90
               javap -private -classpath "$jar" net.minecraft.data.AtlasIds | head -60
               javap -private -classpath "$jar" net.minecraft.client.renderer.rendertype.RenderTypes | grep -E 'entitySolid|entityCutout' | head -30
               javap -private -classpath "$jar" net.minecraft.client.gui.screens.Screen | head -110
