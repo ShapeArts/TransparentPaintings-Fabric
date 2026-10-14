@@ -59,13 +59,13 @@ public final class ClassicFrameGeometry {
                              int light,int tint) {
         float ax=-hw+a,bx=hw-a,ay=-hh+a,by=hh-a;
         float cx=-hw+c,dx=hw-c,cy=-hh+c,dy=hh-c;
-        quad(p,b,tex, ax,by,za, cx,dy,zc, dx,dy,zc, bx,by,za,
-             0,0,-1,light,tint);  // top, mitered
-        quad(p,b,tex, ax,ay,za, bx,ay,za, dx,cy,zc, cx,cy,zc,
+        quad(p,b,tex, ax,by,za, bx,by,za, dx,dy,zc, cx,dy,zc,
+             0,0,-1,light,tint);  // top
+        quad(p,b,tex, ax,ay,za, cx,cy,zc, dx,cy,zc, bx,ay,za,
              0,0,-1,light,tint);  // bottom
-        quad(p,b,tex, ax,ay,za, cx,cy,zc, cx,dy,zc, ax,by,za,
+        quad(p,b,tex, ax,ay,za, ax,by,za, cx,dy,zc, cx,cy,zc,
              0,0,-1,light,tint);  // left
-        quad(p,b,tex, dx,cy,zc, bx,ay,za, bx,by,za, dx,dy,zc,
+        quad(p,b,tex, dx,cy,zc, dx,dy,zc, bx,by,za, bx,ay,za,
              0,0,-1,light,tint);  // right
     }
 
