@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /** Adds extruded wooden strips around (not behind) the artwork. */
 @Mixin(PaintingRenderer.class)
 public abstract class PaintingRendererFrameMixin {
-    @Inject(method="submit",at=@At("TAIL"))
+    @Inject(method="submit",at=@At("HEAD"))
     private void transparentpaintings$submitFrames(PaintingRenderState state, PoseStack poses,
        SubmitNodeCollector collector, CameraRenderState camera, CallbackInfo ci) {
         if(state.variant==null || state.direction==null || Minecraft.getInstance().level==null) return;
@@ -29,18 +29,17 @@ public abstract class PaintingRendererFrameMixin {
         if(style.wood()==0) return;
         String type=FrameStyles.WOODS[style.wood()].toLowerCase(java.util.Locale.ROOT).replace(' ','_');
         Identifier texture=Identifier.withDefaultNamespace("textures/block/"+type+"_planks.png");
-        float w=state.variant.width(), h=state.variant.height(), t=style.width();
+        float w=state.variant.width(), h=state.variant.height(), t=style.width()/16.0f;
         if(t*2>=w || t*2>=h) return;
         poses.pushPose();
-        poses.rotateDegrees(Axis.YP,180f-state.direction.toYRot());
-        poses.scale(1f/16f,1f/16f,1f/16f);
+        poses.rotateDegrees(Axis.YP,180f-state.direction.get2DDataValue()*90f);
         collector.submitCustomGeometry(poses,RenderTypes.entitySolid(texture),(pose,buffer)->{
            float x=-w/2f, y=-h/2f;
            // Four boxes: top, bottom, left, right. Front at -1.35 pixels; back at -0.3.
-           box(pose,buffer,x,y+h-t,x+w,y+h,-1.35f,-0.30f,state.lightCoords);
-           box(pose,buffer,x,y,x+w,y+t,-1.35f,-0.30f,state.lightCoords);
-           box(pose,buffer,x,y+t,x+t,y+h-t,-1.35f,-0.30f,state.lightCoords);
-           box(pose,buffer,x+w-t,y+t,x+w,y+h-t,-1.35f,-0.30f,state.lightCoords);
+           box(pose,buffer,x,y+h-t,x+w,y+h,-0.09f,-0.025f,state.lightCoords);
+           box(pose,buffer,x,y,x+w,y+t,-0.09f,-0.025f,state.lightCoords);
+           box(pose,buffer,x,y+t,x+t,y+h-t,-0.09f,-0.025f,state.lightCoords);
+           box(pose,buffer,x+w-t,y+t,x+w,y+h-t,-0.09f,-0.025f,state.lightCoords);
         });
         poses.popPose();
     }
