@@ -61,10 +61,18 @@ tasks.register('generateReferenceFrameTexture') {
                 // Transparent source-white parts are never sampled by the frame UVs,
                 // but clear them as a second guard against blocking transparent art.
                 int alpha=255
-                double lum=(0.2126*red+0.7152*green+0.0722*blue)/135.0
-                int r=Math.min(255,Math.max(0,(int)Math.round(target[0]*lum)))
-                int g=Math.min(255,Math.max(0,(int)Math.round(target[1]*lum)))
-                int b=Math.min(255,Math.max(0,(int)Math.round(target[2]*lum)))
+                // Preserve the original pixelated wood-grain, but split each
+                // atlas tile into a subtly highlighted outside, natural-color
+                // central band and shadowed inner edge. Source is an 80px atlas
+                // arranged on a 5x5 grid of 16px texture cells.
+                double luminance=(0.2126*red+0.7152*green+0.0722*blue)/135.0
+                double woodGrain=0.70+0.30*luminance
+                int localX=x%16
+                double profile = localX < 4 ? 1.12 : (localX < 11 ? 1.0 : 0.86)
+                double strength=woodGrain*profile
+                int r=Math.min(255,Math.max(0,(int)Math.round(target[0]*strength)))
+                int g=Math.min(255,Math.max(0,(int)Math.round(target[1]*strength)))
+                int b=Math.min(255,Math.max(0,(int)Math.round(target[2]*strength)))
                 image.setRGB(x,y,(alpha<<24)|(r<<16)|(g<<8)|b)
             }
             javax.imageio.ImageIO.write(image,'png',new File(destination,wood+'.png'))
