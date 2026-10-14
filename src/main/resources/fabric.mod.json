@@ -3,8 +3,9 @@
   "id": "transparentpaintings",
   "version": "${version}",
   "name": "Transparent Paintings",
-  "description": "Experimental alpha-cutout paintings on Fabric 26.3.",
+  "description": "Transparent paintings with a 3D wood frame editor.",
   "environment": "client",
+  "entrypoints": {"client": ["dev.transparentpaintings.TransparentPaintingsClient"]},
   "mixins": ["transparentpaintings.mixins.json"],
   "depends": {"fabricloader": ">=0.19.5", "minecraft": "26.3", "java": ">=25"}
 }
